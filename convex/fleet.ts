@@ -8,6 +8,15 @@ export const ingest = internalMutation({
   },
 });
 
+export const latestVideo = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const video = await ctx.db.query("events").withIndex("by_at").order("desc")
+      .filter((q) => q.eq(q.field("kind"), "video")).first();
+    return video ? await ctx.storage.getUrl(video.payload.storageId) : null;
+  },
+});
+
 // The latest latency sweep, and for each phase its latest reset plus the rounds published after it.
 export const state = internalQuery({
   args: {},
