@@ -29,7 +29,7 @@ h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute
 </style></head><body><main>
 <h1>Edge Fleet</h1>
 <p class="sub">Simulated Unitree G1 humanoids climb a 35&deg; fixed-line slope, each with two hidden faults and its own Claude agent. The walking policy runs on the robot (edge); agents read only telemetry and change one setting per round. The simulator is the judge: a summit is 1.5 m of ascent without falling.</p>
-<div class="card" style="margin-bottom:16px"><h2>60-second demo</h2><video controls preload="metadata" playsinline style="width:100%;max-width:960px;display:block;border-radius:8px;background:#000" src="/video.mp4"></video></div>
+<div class="card" style="margin-bottom:16px"><h2>60-second demo</h2><video controls preload="metadata" playsinline style="width:100%;max-width:960px;display:block;border-radius:8px;background:#000" id="demo"></video></div>
 <div class="row">
  <div class="card"><h2>Why reflexes stay on the edge</h2><div class="lat" id="lat"><div>latency sweep pending</div></div><p class="sub" style="margin:6px 0 0;font-size:12px">Healthy robots, same seeds. Bar = share of runs that summit at each action delay (control steps); number above = mean steps to summit.</p></div>
  <div class="card"><h2>Train: solo vs shared rulebook</h2><div class="cmp" id="cmp-train"></div></div>
@@ -60,6 +60,7 @@ function renderPhase(id,ph,title){const el=document.getElementById("phase-"+id);
   g.map(name=>{const s=st?st[name]:null;return '<span>'+esc(name)+'</span><b>'+(s?s.solved+"/"+s.of:"0/12")+'</b><span>'+fmt(s&&s.mean_rounds)+'</span><span>'+fmt(s&&s.calls_per_summit)+'</span>';}).join("");
  if(id==="train"&&last)document.getElementById("rules").innerHTML=last.rulebook.length?last.rulebook.map(r=>"<li>"+esc(r)+"</li>").join(""):"<li>empty</li>";}
 async function tick(){try{const s=await (await fetch("/state",{cache:"no-store"})).json();
+ const vid=document.getElementById("demo");if(s.video&&vid.dataset.src!==s.video){vid.dataset.src=s.video;vid.src=s.video;}
  if(s.latency){const rows=s.latency.rows;document.getElementById("lat").innerHTML=rows.map(r=>'<div title="mean steps to summit: '+fmt(r.mean_steps_to_summit)+'"><span>'+r.summits+'/'+r.runs+'</span><span>'+(r.mean_steps_to_summit?r.mean_steps_to_summit+"st":"")+'</span><em class="'+(r.summits===0?"bad":"")+'" style="height:'+(r.summits/r.runs*70)+'%"></em><span>'+r.lag_steps+'</span></div>').join("");}
  renderPhase("train",s.train,"Phase 1 &middot; train");renderPhase("holdout",s.holdout,"Phase 2 &middot; held-out robots");
 }catch(e){}}

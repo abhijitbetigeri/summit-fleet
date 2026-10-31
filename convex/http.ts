@@ -32,21 +32,22 @@ http.route({
   }),
 });
 
-http.route({
-  path: "/video.mp4",
-  method: "GET",
-  handler: httpAction(async (ctx) => {
-    const url = await ctx.runQuery(internal.fleet.latestVideo, {});
-    return url ? Response.redirect(url, 302) : new Response("no video yet", { status: 404 });
-  }),
+const latestVideo = httpAction(async (ctx) => {
+  const url = await ctx.runQuery(internal.fleet.latestVideo, {});
+  return url
+    ? new Response(null, { status: 302, headers: { location: url, "cache-control": "no-store" } })
+    : new Response("no video yet", { status: 404 });
 });
+http.route({ path: "/video.mp4", method: "GET", handler: latestVideo });
+http.route({ path: "/demo.mp4", method: "GET", handler: latestVideo });
 
 http.route({
   path: "/state",
   method: "GET",
   handler: httpAction(async (ctx) => {
     const state = await ctx.runQuery(internal.fleet.state, {});
-    return new Response(JSON.stringify(state), {
+    const video = await ctx.runQuery(internal.fleet.latestVideo, {});
+    return new Response(JSON.stringify({ ...state, video }), {
       headers: { "content-type": "application/json", "cache-control": "no-store" },
     });
   }),
