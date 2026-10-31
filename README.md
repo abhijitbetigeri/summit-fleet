@@ -40,6 +40,19 @@ Failures are not monotonic in delay, because the robot becomes unpredictable rat
 Two faults with one fix per round means three rounds is the minimum. Telemetry-only agents ran close to that
 minimum. The shared rulebook gave Opus no measurable gain (a ceiling effect) and cost 11–29% more tokens.
 
+**Small agents with fleet knowledge:** the same held-out robots, with Claude Haiku 5.5 robot agents, run once
+with no rulebook and once with the frozen rulebook the Opus fleet learned. Four rounds.
+
+| Haiku 5.5 agents | No rulebook | Opus-learned rulebook |
+|---|---|---|
+| Summited | 10/12 (2 fell) | **12/12** |
+| Summited by round 3 | 5/12 | **10/12** |
+| Mean rounds to summit | 3.5 | **3.08** |
+| Agent calls per summit | 3.1 | **2.08** |
+
+Fleet knowledge let the small model match the large model's near-minimum rounds. This is one paired run with
+12 robots per arm.
+
 Mid-run, the agents flagged that our original success check marked robots at 2.7–3.2 m as "stalled". The
 verdict is now "reached 1.5 m without falling", and the stricter check is kept as a separate `clean` flag.
 
