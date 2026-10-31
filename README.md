@@ -2,7 +2,6 @@
 
 **Claude agents fix a humanoid fleet from telemetry, with reflexes on the edge and judgment in the cloud.**
 
-Built at Night Hack (Founders, Inc.), San Francisco, 30 Oct 2026.
 Live board: **https://hip-crab-119.convex.site**
 
 24 simulated Unitree G1 humanoids climb a 35° fixed-line slope in MuJoCo. Each robot has two hidden faults
